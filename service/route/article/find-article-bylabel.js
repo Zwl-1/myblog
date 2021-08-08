@@ -1,0 +1,22 @@
+// posts.find({post_text:{$regex:"runoob",$options:"$i"}})
+const { Article } = require('../../model/article')
+module.exports = async (req, res) => {
+    //查询文章通过标签
+    let allArticle = Article.find({label:{$regex:req.label,$option: "$i"}})
+	// 匹配的文章的数量
+	let count = allArticle.length;
+    const pagesize = 10;
+	// 总页数
+	let total = Math.ceil(count / pagesize);
+
+	// 页码对应的数据查询开始位置
+	let start = (page - 1) * pagesize; 
+
+	// 将用户信息从数据库中查询出来
+	let article = await Article.find({label:{$regex:req.label,$option: "$i"}}).limit(pagesize).skip(start)
+
+    res.send({
+        article: article,
+        total: total
+    })
+}
